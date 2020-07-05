@@ -1,0 +1,48 @@
+<style>
+	#video{
+	border: 1px solid #999;
+	width: 98%;
+	max-width: 860px;
+}
+</style>
+ 
+      <h1 style="text-align: center;">SCREEN CAPTURE</h1>
+      <button id="start">start capture</button>
+      <button id="stop">stop capture</button><br>
+      <video id="video" autoplay></video>
+
+<script>
+	const videoElement=document.getElementById("video")
+const start=document.getElementById("start")
+const stop=document.getElementById("stop")
+var displayMediaOptions={
+	video:{
+		cursor:'always'
+	},
+	audio:false
+}
+
+start.addEventListener("click",function(e){
+	startCapture()
+},false)
+stop.addEventListener("click",function(e){
+	stopCapture()
+},false)
+
+async function startCapture(e){
+	try{
+		videoElement.srcObject = await navigator.mediaDevices.getDisplayMedia(displayMediaOptions);
+	}catch(err){
+		console.error("Error:" + err)
+	}
+}
+
+function stopCapture(e){
+	let tracks= videoElement.srcObject.getTracks()
+	tracks.forEach(track => track.stop())
+	videoElement.srcObject=null
+}
+</script>
+
+
+      

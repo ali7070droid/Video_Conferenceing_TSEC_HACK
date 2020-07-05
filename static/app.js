@@ -4,6 +4,8 @@ const container = document.getElementById('container');
 const count = document.getElementById('count');
 var connected = false;
 var room;
+const voiceStatus = document.getElementById('Mute');
+const toggle_video = document.getElementById('Video');
 
 function addLocalVideo() {
     Twilio.Video.createLocalVideoTrack().then(track => {
@@ -82,7 +84,7 @@ function participantConnected(participant) {
     participant_div.appendChild(label_div);
 
     container.appendChild(participant_div);
-
+    
     participant.tracks.forEach(publication => {
         if (publication.isSubscribed)
             trackSubscribed(tracks_div, publication.track);
@@ -115,5 +117,35 @@ function disconnect() {
     updateParticipantCount();
 };
 
+function unmute_mute(event) {
+    event.preventDefault();
+    
+    room.localParticipant.audioTracks.forEach(function(track) {
+        if ( track.track.isEnabled == true ) {
+            track.track.disable();
+            voiceStatus.innerHTML="UnMute";
+    } else {
+        track.track.enable();
+        voiceStatus.innerHTML="Mute";
+    }
+      })
+};
+
+function video_toggle(event) {
+    event.preventDefault();
+    
+    room.localParticipant.videoTracks.forEach(function(track) {
+        if ( track.track.isEnabled == true ) {
+            track.track.disable();
+            toggle_video.innerHTML="Video-Play";
+    } else {
+        track.track.enable();
+        toggle_video.innerHTML="Video-Pause";
+    }
+      })  
+};
+
 addLocalVideo();
 button.addEventListener('click', connectButtonHandler);
+voiceStatus.addEventListener('click',unmute_mute);
+toggle_video.addEventListener('click', video_toggle);
